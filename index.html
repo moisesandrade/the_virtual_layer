@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Virtual Layer — Caso de Estudio | FLAMA.MEDIA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0A0A0F;
+  --cyan: #00E5C8;
+  --magenta: #D946A8;
+  --white: #F0F0F0;
+  --grey: #3A3A4A;
+  --grey-light: #8888A0;
+  --display: 'Space Grotesk', sans-serif;
+  --body: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,229,200,0.1);
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.nav-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--grey-light);
+  letter-spacing: 0.1em;
+}
+
+/* HERO */
+.hero {
+
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+
+  padding: 140px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 50%, rgba(0,229,200,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 60%, rgba(217,70,168,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 60px;
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(52px, 6vw, 96px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin-bottom: 28px;
+}
+.hero-title .accent { color: var(--cyan); }
+.hero-title .accent-m { color: var(--magenta); }
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--grey-light);
+  max-width: 480px;
+  font-weight: 300;
+  margin-bottom: 40px;
+  line-height: 1.75;
+}
+.hero-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.hero-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--cyan);
+  color: var(--black);
+  border: none;
+  cursor: pointer;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 18px 36px;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 32px rgba(0,229,200,0.2);
+  align-self: flex-start;
+}
+.hero-play-btn:hover {
+  background: #00ffdf;
+  transform: translateY(-2px);
+  box-shadow: 0 0 48px rgba(0,229,200,0.4);
+}
+.hero-play-icon {
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 7px 0 7px 13px;
+  border-color: transparent transparent transparent var(--black);
+  flex-shrink: 0;
+}
+.hero-meta {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.meta-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--grey-light);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.meta-value {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+}
+
+/* HERO THUMBNAIL */
+.hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-thumb-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0,229,200,0.2);
+  box-shadow: 0 0 60px rgba(0,229,200,0.08), 0 32px 64px rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+.hero-thumb-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10,10,15,0.25);
+  transition: background 0.3s;
+}
+.hero-thumb-wrap:hover::after { background: rgba(10,10,15,0.1); }
+.hero-thumb-wrap img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+}
+.thumb-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  gap: 12px;
+}
+.thumb-play-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(0,229,200,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 0 32px rgba(0,229,200,0.4);
+}
+.hero-thumb-wrap:hover .thumb-play-circle {
+  transform: scale(1.1);
+  background: var(--cyan);
+}
+.thumb-play-circle-icon {
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 18px;
+  border-color: transparent transparent transparent var(--black);
+  margin-left: 3px;
+}
+.thumb-play-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--white);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+/* VIDEO POPUP */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+.popup-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.popup-inner {
+  width: 90vw;
+  max-width: 1100px;
+  position: relative;
+  transform: scale(0.93) translateY(16px);
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.popup-overlay.open .popup-inner { transform: scale(1) translateY(0); }
+.popup-video {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(0,229,200,0.2);
+  box-shadow: 0 0 80px rgba(0,229,200,0.1), 0 40px 80px rgba(0,0,0,0.8);
+}
+.popup-video iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+.popup-close {
+  position: absolute;
+  top: -48px; right: 0;
+  background: none;
+  border: 1px solid var(--grey);
+  color: var(--white);
+  width: 36px; height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s;
+  font-family: var(--display);
+}
+.popup-close:hover { border-color: var(--cyan); color: var(--cyan); }
+.popup-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--grey-light);
+  letter-spacing: 0.12em;
+  margin-top: 16px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* CAROUSEL */
+.carousel-section {
+  padding: 80px 48px 120px;
+  border-top: 1px solid var(--grey);
+}
+.carousel-header {
+  margin-bottom: 48px;
+}
+.carousel-wrapper { position: relative; }
+.carousel-track {
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid var(--grey);
+}
+.carousel-slide {
+  display: none;
+  flex-direction: column;
+}
+.carousel-slide.active { display: flex; }
+.carousel-img-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--grey);
+  position: relative;
+  overflow: hidden;
+}
+.carousel-img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(45deg, transparent 48%, rgba(0,229,200,0.03) 50%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(217,70,168,0.02) 50%, transparent 52%);
+  background-size: 40px 40px;
+}
+.carousel-img-placeholder img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+.carousel-img-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--grey);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+.carousel-caption {
+  padding: 20px 24px;
+  font-size: 13px;
+  color: var(--grey-light);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+}
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.carousel-btn {
+  background: none;
+  border: 1px solid var(--grey);
+  color: var(--white);
+  width: 40px; height: 40px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+  border-radius: 2px;
+  font-family: var(--display);
+}
+.carousel-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.carousel-dots { display: flex; gap: 8px; }
+.carousel-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--grey);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.carousel-dot.active { background: var(--cyan); transform: scale(1.3); }
+
+/* SECTIONS */
+section {
+  padding: 100px 48px;
+  border-top: 1px solid var(--grey);
+}
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-eyebrow::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 60px;
+  background: var(--cyan);
+  opacity: 0.4;
+}
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+.section-body {
+  font-size: 17px;
+  color: var(--grey-light);
+  line-height: 1.8;
+  max-width: 680px;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.brief-quote {
+  font-family: var(--display);
+  font-size: clamp(22px, 2.5vw, 36px);
+  font-weight: 500;
+  line-height: 1.3;
+  border-left: 3px solid var(--cyan);
+  padding-left: 28px;
+  color: var(--white);
+  margin: 32px 0;
+}
+.concept-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 56px;
+}
+.pillar {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--grey);
+  padding: 36px 28px;
+  transition: border-color 0.3s;
+}
+.pillar:hover { border-color: var(--cyan); }
+.pillar-number {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--magenta);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}
+.pillar-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.pillar-text {
+  font-size: 14px;
+  color: var(--grey-light);
+  line-height: 1.7;
+}
+.character-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 56px;
+}
+.character-attr {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--grey);
+}
+.attr-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--magenta);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.attr-value {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 500;
+}
+.attr-detail { font-size: 13px; color: var(--grey-light); }
+
+/* TIMELINE */
+.timeline-section {
+  padding: 100px 0;
+  border-top: 1px solid var(--grey);
+  overflow: hidden;
+}
+.timeline-header { padding: 0 48px; margin-bottom: 56px; }
+.timeline-track {
+  display: flex;
+  gap: 2px;
+  padding: 0 48px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  cursor: grab;
+}
+.timeline-track::-webkit-scrollbar { display: none; }
+.timeline-track:active { cursor: grabbing; }
+.frame-card {
+  flex: 0 0 200px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--grey);
+  padding: 20px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.frame-card:hover { border-color: var(--cyan); transform: translateY(-4px); }
+.frame-tc {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.frame-id {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.07);
+  margin-bottom: 6px;
+}
+.frame-desc { font-size: 12px; color: var(--grey-light); line-height: 1.6; }
+.frame-tool {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--magenta);
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+
+/* STACK PILLS */
+.stack-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 48px;
+}
+.stack-pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 28px 24px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--grey);
+  transition: border-color 0.3s;
+}
+.stack-pill:hover { border-color: rgba(0,229,200,0.3); }
+.pill-icon {
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+}
+.tag-image { background: rgba(0,229,200,0.1); color: var(--cyan); }
+.tag-video { background: rgba(217,70,168,0.1); color: var(--magenta); }
+.tag-post { background: rgba(255,255,255,0.06); color: var(--grey-light); }
+.tag-direction { background: rgba(255,200,0,0.1); color: #FFC800; }
+.pill-name {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.pill-detail { font-size: 13px; color: var(--grey-light); line-height: 1.6; }
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 56px;
+}
+.stat {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--grey);
+  padding: 40px 28px;
+  text-align: center;
+}
+.stat-number {
+  font-family: var(--display);
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--cyan), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--grey-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* CTA */
+.cta-section {
+  padding: 140px 48px;
+  border-top: 1px solid var(--grey);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,229,200,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-title {
+  font-family: var(--display);
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  position: relative;
+}
+.cta-sub {
+  font-size: 18px;
+  color: var(--grey-light);
+  margin-bottom: 48px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+.cta-btn {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  padding: 18px 48px;
+  background: var(--cyan);
+  color: var(--black);
+  text-decoration: none;
+  border-radius: 2px;
+  position: relative;
+  transition: background 0.2s, transform 0.2s;
+}
+.cta-btn:hover { background: #00ffdf; transform: translateY(-2px); }
+.cta-btn-ghost {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  padding: 18px 48px;
+  border: 1px solid var(--grey);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 2px;
+  margin-left: 16px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.cta-btn-ghost:hover { border-color: var(--white); }
+
+/* FOOTER */
+footer {
+  padding: 40px 48px;
+  border-top: 1px solid var(--grey);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--grey-light);
+  letter-spacing: 0.08em;
+}
+
+/* PIXEL CANVAS */
+#pixelCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+.hero, .carousel-section, section, .timeline-section, .cta-section, footer { position: relative; z-index: 1; }
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+  .hero-left { padding-right: 0; margin-bottom: 40px; }
+  .hero-right { display: none; }
+  nav, section, .cta-section { padding-left: 24px; padding-right: 24px; }
+  .two-col, .concept-pillars, .character-grid, .stats-row, .stack-pills { grid-template-columns: 1fr; }
+  .carousel-section { padding-left: 24px; padding-right: 24px; }
+  .timeline-track { padding: 0 24px; }
+  .timeline-header { padding: 0 24px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<script>
+// PROTECCIÓN DE CONTENIDO
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+document.querySelectorAll('img').forEach(img => {
+  img.setAttribute('draggable', 'false');
+  img.style.userSelect = 'none';
+  img.style.webkitUserSelect = 'none';
+  img.style.pointerEvents = 'none';
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12') e.preventDefault();
+  if (e.ctrlKey && ['s','u','p'].includes(e.key.toLowerCase())) e.preventDefault();
+});
+</script>
+<body>
+
+<canvas id="pixelCanvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><a href="https://www.flama.media" target="_blank" class="nav-logo" style="text-decoration:none;">FLAMA.MEDIA</a></div>
+  <div class="nav-label">Caso de Estudio — The Virtual Layer</div>
+</nav>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="videoPopup">
+  <div class="popup-inner">
+    <button class="popup-close" id="popupClose">✕</button>
+    <div class="popup-video">
+      <iframe id="popupIframe" src="" title="The Virtual Layer — Demo Reel" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+    <div class="popup-label">THE VIRTUAL LAYER — DEMO REEL · PRODUCIDO POR FLAMA.MEDIA · 01:00</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">FLAMA.MEDIA — Producción Audiovisual IA · 2026</div>
+    <h1 class="hero-title">
+      <span class="accent">The</span><br>
+      Virtual<br>
+      <span class="accent-m">Layer.</span>
+    </h1>
+    <p class="hero-sub">
+      De la sala vacía a la experiencia completa. Cómo construimos el reel de una aplicación de realidad mixta usando únicamente IA generativa.
+    </p>
+    <div class="hero-bottom">
+      <button class="hero-play-btn" id="openPopup">
+        <span class="hero-play-icon"></span>
+        Ver reel aquí
+      </button>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">Cliente</span>
+          <span class="meta-value">The Virtual Layer</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Formato</span>
+          <span class="meta-value">Demo Reel · 1:00</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Producción</span>
+          <span class="meta-value">100% IA Generativa</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Estudio</span>
+          <span class="meta-value">FLAMA.MEDIA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-thumb-wrap" id="openPopup2">
+      <img src="https://img.youtube.com/vi/gVsyLjp0ClA/maxresdefault.jpg" alt="The Virtual Layer Demo Reel">
+      <div class="thumb-play-overlay">
+        <div class="thumb-play-circle">
+          <span class="thumb-play-circle-icon"></span>
+        </div>
+        <span class="thumb-play-label">Reproducir reel</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARRUSEL — SECCIÓN 2 -->
+<div class="carousel-section">
+  <div class="carousel-header">
+    <div class="section-eyebrow">01 · Proceso</div>
+    <h2 class="section-title reveal">El trabajo<br>detrás.</h2>
+    <p class="section-body reveal">Conceptualización, generación de assets, iteración de personaje, construcción de escenas y montaje final. Todo en IA generativa.</p>
+  </div>
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="prevBtn">←</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+    <button class="carousel-btn" id="nextBtn">→</button>
+  </div>
+  <br>
+  <div class="carousel-wrapper reveal">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide active">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_01.png" alt="Imagen 1">
+          </div>
+        <div class="carousel-caption">Conceptualización y storyboard inicial</div>
+      </div>
+      <div class="carousel-slide">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_02.png" alt="Imagen 2">
+          </div>
+        <div class="carousel-caption">Diseño y desarrollo de personaje</div>
+      </div>
+      <div class="carousel-slide">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_03.png" alt="Imagen 2">
+          </div>
+        <div class="carousel-caption">Generación de escenografía y objetos</div>
+      </div>
+      <div class="carousel-slide">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_04.png" alt="Imagen 2">
+          </div>
+        <div class="carousel-caption">Interfaces VR y composición holográfica</div>
+      </div>
+      <div class="carousel-slide">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_05.png" alt="Imagen 2">
+          </div>
+        <div class="carousel-caption">Animación y generación de video</div>
+      </div>
+      <div class="carousel-slide">
+          <div class="carousel-img-placeholder">
+            <img src="imagen_06.png" alt="Imagen 2">
+          </div>
+        <div class="carousel-caption">Montaje y post-producción final</div>
+      </div>
+    </div>
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="prevBtn">←</button>
+      <div class="carousel-dots" id="carouselDots"></div>
+      <button class="carousel-btn" id="nextBtn">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- BRIEF -->
+<section>
+  <div class="section-eyebrow">02 · El Encargo</div>
+  <div class="two-col">
+    <div>
+      <h2 class="section-title reveal">El producto existía.<br>La historia, no.</h2>
+      <p class="section-body reveal">
+        The Virtual Layer tiene una solución técnicamente sólida: una aplicación de realidad mixta que permite visualizar, configurar y validar mobiliario y espacios en escala 1:1 antes de tomar ninguna decisión de compra o diseño.
+        <br><br>
+        El reto no era explicar qué hace el producto. Era <strong>hacer sentir lo que se siente</strong> al usarlo. La diferencia entre un tutorial y una experiencia.
+      </p>
+    </div>
+    <div>
+      <blockquote class="brief-quote reveal">
+        "Visualizar antes de decidir marca la diferencia."
+      </blockquote>
+      <p class="section-body reveal">
+        Esa frase del brief original fue nuestra brújula. Todo el reel está construido alrededor de ese momento de claridad — cuando algo que no existía, de repente existe.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTO -->
+<section>
+  <div class="section-eyebrow">03 · Concepto</div>
+  <h2 class="section-title reveal">Tres actos.<br>Un umbral.</h2>
+  <p class="section-body reveal">El reel no vende funcionalidades. Narra un viaje: la transición de lo real a lo virtual y la certeza que queda después.</p>
+  <div class="concept-pillars">
+    <div class="pillar reveal">
+      <div class="pillar-number">ACT I</div>
+      <div class="pillar-title">El mundo real</div>
+      <p class="pillar-text">Una sala vacía. Una decisión pendiente. El espacio como lienzo en blanco antes de ser habitado. La protagonista llega con intención.</p>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-number">ACT II</div>
+      <div class="pillar-title">La capa virtual</div>
+      <p class="pillar-text">Las gafas se ponen. El ojo se transforma. El túnel de luz. El menú de producto. Los objetos que aparecen, se escalan, se fijan en el espacio.</p>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-number">ACT III</div>
+      <div class="pillar-title">La certeza</div>
+      <p class="pillar-text">Las gafas se retiran. El espacio ya no está vacío. La sala existe antes de existir. Ella sonríe. Fin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAJE -->
+<section>
+  <div class="section-eyebrow">04 · Diseño de Personaje</div>
+  <h2 class="section-title reveal">Una protagonista<br>sin precedentes.</h2>
+  <p class="section-body reveal">La elección del avatar no fue estética. Fue conceptual. Una mujer con albinismo como protagonista de una pieza sobre ver de otra manera.</p>
+  <div class="character-grid reveal">
+    <div>
+      <div class="character-attr">
+        <span class="attr-label">Morfología</span>
+        <span class="attr-value">Mujer con albinismo, piel translúcida</span>
+        <span class="attr-detail">Cabello blanco-platino, ondulado, sobre hombros. Ojos gris-azul claro.</span>
+      </div>
+      <div class="character-attr">
+        <span class="attr-label">Vestuario</span>
+        <span class="attr-value">Blazer estructura tierra / gris</span>
+        <span class="attr-detail">Pantalón wide-leg a juego. Botines negros de tacón bajo. Paleta neutro-cálida.</span>
+      </div>
+      <div class="character-attr">
+        <span class="attr-label">Arco emocional</span>
+        <span class="attr-value">Determinación → Curiosidad → Certeza</span>
+        <span class="attr-detail">Tres estados emocionales marcados en los tres actos del reel.</span>
+      </div>
+    </div>
+    <div>
+      <div class="character-attr">
+        <span class="attr-label">Coherencia visual</span>
+        <span class="attr-value">Consistencia entre 12 frames generados</span>
+        <span class="attr-detail">Misma identidad facial mantenida en distintos modelos IA.</span>
+      </div>
+      <div class="character-attr">
+        <span class="attr-label">Ratio de descarte</span>
+        <span class="attr-value">~60% de imágenes generadas</span>
+        <span class="attr-detail">Solo se seleccionaron frames con coherencia exacta de identidad, luz y pose.</span>
+      </div>
+      <div class="character-attr">
+        <span class="attr-label">Decisión conceptual</span>
+        <span class="attr-value">Ver de otra manera</span>
+        <span class="attr-detail">El albinismo como metáfora visual: una percepción aumentada de la realidad.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORYBOARD TIMELINE -->
+<div class="timeline-section">
+  <div class="timeline-header">
+    <div class="section-eyebrow">05 · Storyboard</div>
+    <h2 class="section-title reveal">16 frames.<br>60 segundos.</h2>
+  </div>
+  <div class="timeline-track" id="timelineTrack">
+    <div class="frame-card"><div class="frame-tc">0:00 — 0:02</div><div class="frame-id">F01</div><div class="frame-desc">Sala vacía. Mesa con gafas VR. Plano general. Luz cenital.</div><div class="frame-tool">Magnific · Nano Banana</div></div>
+    <div class="frame-card"><div class="frame-tc">0:02 — 0:04</div><div class="frame-id">F02</div><div class="frame-desc">Zoom out. La protagonista aparece en escena, de espaldas.</div><div class="frame-tool">Kling · dual image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:04 — 0:06</div><div class="frame-id">F03</div><div class="frame-desc">Plano detalle. Pasos firmes sobre suelo hormigón pulido.</div><div class="frame-tool">Kling · single image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:05 — 0:06</div><div class="frame-id">F04</div><div class="frame-desc">Traveling trasero. Perfil posterior. No se ve el rostro.</div><div class="frame-tool">Kling · single image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:06 — 0:07</div><div class="frame-id">F05</div><div class="frame-desc">Primer plano frontal. Expresión de curiosidad. Mira a cámara.</div><div class="frame-tool">Kling · dual image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:07 — 0:10</div><div class="frame-id">F06</div><div class="frame-desc">Manos recogen las gafas de la mesa con luz cyan.</div><div class="frame-tool">GPT Image · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:10 — 0:11</div><div class="frame-id">F07</div><div class="frame-desc">Macro extremo del ojo. Pupila que se dilata. Efecto neón.</div><div class="frame-tool">Magnific · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:11 — 0:14</div><div class="frame-id">F08</div><div class="frame-desc">Túnel de luz. Aceleración. Zoom al infinito luminoso.</div><div class="frame-tool">GPT Image · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:14 — 0:16</div><div class="frame-id">F09</div><div class="frame-desc">POV. Manos con control. Menú holográfico de producto.</div><div class="frame-tool">Magnific · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:16 — 0:18</div><div class="frame-id">F10</div><div class="frame-desc">Slider de productos. El pulgar navega. Selecciona lámpara.</div><div class="frame-tool">GPT Image · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:18 — 0:22</div><div class="frame-id">F11</div><div class="frame-desc">El sofá aparece en el espacio. Se escala. Se fija.</div><div class="frame-tool">GPT Image · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:22 — 0:25</div><div class="frame-id">F12</div><div class="frame-desc">Plano general. Sala equipada. La protagonista contempla.</div><div class="frame-tool">GPT Image · Magnific</div></div>
+    <div class="frame-card"><div class="frame-tc">0:25 — 0:28</div><div class="frame-id">F13</div><div class="frame-desc">POV. Mesa se posiciona. Mano con control ajusta.</div><div class="frame-tool">GPT Image · Kling</div></div>
+    <div class="frame-card"><div class="frame-tc">0:28 — 0:31</div><div class="frame-id">F14</div><div class="frame-desc">Se quita las gafas. El espacio virtual se desintegra. Partículas.</div><div class="frame-tool">Kling · dual image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:31 — 0:34</div><div class="frame-id">F15</div><div class="frame-desc">Primer plano. La sala está amueblada. Ella sonríe. Silencio.</div><div class="frame-tool">Kling · dual image</div></div>
+    <div class="frame-card"><div class="frame-tc">0:35</div><div class="frame-id">F16</div><div class="frame-desc">Logo animado. THE VIRTUAL LAYER. Negro total.</div><div class="frame-tool">Kling V3 Pro</div></div>
+  </div>
+</div>
+
+<!-- PRODUCCIÓN -->
+<section>
+  <div class="section-eyebrow">06 · Producción</div>
+  <h2 class="section-title reveal">Sin cámara.<br>Sin set.<br>Sin actores.</h2>
+  <p class="section-body reveal">Todo el reel fue producido con IA generativa — imagen, video, dirección creativa y post-producción. Un pipeline 100% digital que elimina costes y tiempos del rodaje convencional sin sacrificar ni un gramo de impacto visual.</p>
+  <div class="stack-pills">
+    <div class="stack-pill reveal">
+      <div class="pill-icon tag-image">IMG</div>
+      <div><div class="pill-name">Generación de imagen</div><div class="pill-detail">Escenografía, personaje, objetos, efectos holográficos e interfaces VR</div></div>
+    </div>
+    <div class="stack-pill reveal">
+      <div class="pill-icon tag-video">VID</div>
+      <div><div class="pill-name">Animación image-to-video</div><div class="pill-detail">Todos los clips del reel generados desde fotogramas estáticos</div></div>
+    </div>
+    <div class="stack-pill reveal">
+      <div class="pill-icon tag-direction">DIR</div>
+      <div><div class="pill-name">Dirección creativa con IA</div><div class="pill-detail">Concepto, storyboard, prompting avanzado y guión de voz en off</div></div>
+    </div>
+    <div class="stack-pill reveal">
+      <div class="pill-icon tag-post">POST</div>
+      <div><div class="pill-name">Post-producción</div><div class="pill-detail">Edición, color, tipografía, sonido y composición de secuencias finales</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NÚMEROS -->
+<section>
+  <div class="section-eyebrow">07 · Números</div>
+  <h2 class="section-title reveal">La producción<br>en datos.</h2>
+  <div class="stats-row">
+    <div class="stat reveal"><div class="stat-number">1'</div><div class="stat-label">Duración del reel</div></div>
+    <div class="stat reveal"><div class="stat-number">16</div><div class="stat-label">Frames producidos</div></div>
+    <div class="stat reveal"><div class="stat-number">+80</div><div class="stat-label">Assets generados</div></div>
+    <div class="stat reveal"><div class="stat-number">0</div><div class="stat-label">Días de rodaje</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-bg"></div>
+  <h2 class="cta-title reveal">Tu producto merece<br><span style="color:var(--cyan)">una historia así.</span></h2>
+  <p class="cta-sub reveal">FLAMA.MEDIA produce reels de producto, demos y campañas audiovisuales con IA generativa. Sin rodaje. Sin esperas.</p>
+  <div style="position:relative">
+    <a href="mailto:hola@flama.media" class="cta-btn">Hablemos</a>
+    <a href="https://flama.media" class="cta-btn-ghost" target="_blank">flama.media</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><a href="https://www.flama.media" target="_blank" class="nav-logo" style="text-decoration:none;">FLAMA.MEDIA</a></div>
+  <div class="footer-copy">© 2026 · Producción Audiovisual IA · Sevilla · Ciudad de México</div>
+</footer>
+
+<script>
+// PIXEL PARTICLES
+const canvas = document.getElementById('pixelCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COLORS = ['#00E5C8','#D946A8','#00E5C8','#ffffff'];
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function Particle() {
+  this.reset = function() {
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.size = Math.random()*2.5+1;
+    this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.vx = (Math.random()-0.5)*0.3; this.vy = -Math.random()*0.5-0.1;
+    this.alpha = Math.random()*0.35+0.08;
+    this.life = 1; this.decay = Math.random()*0.003+0.001;
+  };
+  this.reset();
+}
+for(let i=0;i<60;i++){const p=new Particle();p.life=Math.random();particles.push(p);}
+let lastSY=0;
+window.addEventListener('scroll',()=>{
+  const d=Math.abs(window.scrollY-lastSY);
+  if(d>5){
+    for(let i=0;i<Math.min(d*0.12,5);i++){
+      const p=new Particle();p.vy=-Math.random()*1.4-0.5;p.vx=(Math.random()-0.5)*0.9;p.alpha=0.55;p.decay=0.008;
+      particles.push(p);if(particles.length>140)particles.shift();
+    }
+  }
+  lastSY=window.scrollY;
+});
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.life-=p.decay;if(p.life<=0){p.reset();return;}
+    p.x+=p.vx;p.y+=p.vy;
+    ctx.save();ctx.globalAlpha=p.alpha*p.life;ctx.fillStyle=p.color;
+    ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.size);ctx.restore();
+  });
+  requestAnimationFrame(draw);
+}
+resize();window.addEventListener('resize',resize);draw();
+
+// POPUP
+const popup=document.getElementById('videoPopup');
+const pIframe=document.getElementById('popupIframe');
+const closeBtn=document.getElementById('popupClose');
+const YT='https://www.youtube.com/embed/gVsyLjp0ClA?autoplay=1&rel=0';
+function openPopup(){pIframe.src=YT;popup.classList.add('open');document.body.style.overflow='hidden';}
+function closePopup(){popup.classList.remove('open');pIframe.src='';document.body.style.overflow='';}
+document.getElementById('openPopup').addEventListener('click',openPopup);
+document.getElementById('openPopup2').addEventListener('click',openPopup);
+closeBtn.addEventListener('click',closePopup);
+popup.addEventListener('click',e=>{if(e.target===popup)closePopup();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup();});
+
+// SCROLL REVEAL
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),i*80);});
+},{threshold:0.1});
+reveals.forEach(el=>obs.observe(el));
+
+// CAROUSEL
+const slides=document.querySelectorAll('.carousel-slide');
+const dotsC=document.getElementById('carouselDots');
+let cur=0;
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='carousel-dot'+(i===0?' active':'');
+  d.addEventListener('click',()=>goTo(i));
+  dotsC.appendChild(d);
+});
+    function goTo(i){
+      const prev = cur;
+      cur = (i + slides.length) % slides.length;
+      
+      slides[prev].style.transition = 'opacity 0.6s ease';
+      slides[prev].style.opacity = '0';
+      
+      setTimeout(() => {
+        slides[prev].classList.remove('active');
+        slides[prev].style.opacity = '';
+        slides[prev].style.transition = '';
+        slides[cur].style.opacity = '0';
+        slides[cur].classList.add('active');
+        setTimeout(() => {
+          slides[cur].style.transition = 'opacity 0.6s ease';
+          slides[cur].style.opacity = '1';
+        }, 20);
+      }, 600);
+
+      dotsC.children[prev].classList.remove('active');
+      dotsC.children[cur].classList.add('active');
+    }
+document.getElementById('prevBtn').addEventListener('click',()=>goTo(cur-1));
+document.getElementById('nextBtn').addEventListener('click',()=>goTo(cur+1));
+setInterval(() => goTo(cur + 1), 3000);
+
+// TIMELINE DRAG
+const tl=document.getElementById('timelineTrack');
+let drag=false,sx,sl;
+tl.addEventListener('mousedown',e=>{drag=true;sx=e.pageX-tl.offsetLeft;sl=tl.scrollLeft;});
+tl.addEventListener('mouseleave',()=>drag=false);
+tl.addEventListener('mouseup',()=>drag=false);
+tl.addEventListener('mousemove',e=>{if(!drag)return;e.preventDefault();tl.scrollLeft=sl-(e.pageX-tl.offsetLeft-sx)*1.5;});
+</script>
+</body>
+</html>
