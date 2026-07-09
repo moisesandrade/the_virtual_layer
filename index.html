@@ -1119,8 +1119,8 @@ resize();window.addEventListener('resize',resize);draw();
 const popup=document.getElementById('videoPopup');
 const pIframe=document.getElementById('popupIframe');
 const closeBtn=document.getElementById('popupClose');
-const VIMEO='https://player.vimeo.com/video/1208501511?autoplay=1&title=0&byline=0&portrait=0';
-function openPopup(){pIframe.src=VIMEO;popup.classList.add('open');document.body.style.overflow='hidden';}
+const VIMEO='https://player.vimeo.com/video/1208501511?autoplay=1&title=0&byline=0&portrait=0&dnt=1';
+  function openPopup(){pIframe.src=VIMEO;popup.classList.add('open');document.body.style.overflow='hidden';}
 function closePopup(){popup.classList.remove('open');pIframe.src='';document.body.style.overflow='';}
 document.getElementById('openPopup').addEventListener('click',openPopup);
 document.getElementById('openPopup2').addEventListener('click',openPopup);
